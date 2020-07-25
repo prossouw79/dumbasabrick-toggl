@@ -1,0 +1,91 @@
+{
+    "startButtons": [
+        {
+            "text": "Standup",
+            "params": {
+                "description": "Standup",
+                "tags": [
+                    "Standup"
+                ]
+            }
+        },
+        {
+            "text": "Meeting",
+            "params": {
+                "description": "Meeting",
+                "tags": [
+                    "Meeting"
+                ]
+            }
+        },
+        {
+            "text": "Team Admin",
+            "params": {
+                "description": "T Admin",
+                "tags": [
+                    "Admin",
+                    "Team"
+                ]
+            }
+        },
+        {
+            "text": "Synthesis Admin",
+            "params": {
+                "description": "Company admin",
+                "tags": [
+                    "Admin",
+                    "Synthesis"
+                ]
+            }
+        },
+        {
+            "text": "Design",
+            "params": {
+                "description": "Design/Architecture",
+                "tags": [
+                    "Meeting",
+                    "Architecture"
+                ]
+            }
+        },
+        {
+            "text": "BTB",
+            "params": {
+                "description": "BTB: Dev",
+                "tags": [
+                    "Coding",
+                    "BTB"
+                ]
+            }
+        },
+        {
+            "text": "GTB",
+            "params": {
+                "description": "GTB: Dev",
+                "tags": [
+                    "Coding",
+                    "GTB"
+                ]
+            }
+        },
+        {
+            "text": "RTB",
+            "params": {
+                "description": "RTB: Dev",
+                "tags": [
+                    "Coding",
+                    "RTB"
+                ]
+            }
+        },
+        {
+            "text": "Cloud",
+            "params": {
+                "description": "Cloud",
+                "tags": [
+                    "Cloud"
+                ]
+            }
+        }
+    ]
+}

@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <!-- Angular Material CSS now available via Google CDN; version 1.1.22 used here -->
+    <link rel="stylesheet"
+        href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.22/angular-material.min.css">
+
+    <!-- Angular Material Dependencies -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular-animate.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular-aria.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular-messages.min.js"></script>
+
+    <!-- Angular Material Javascript now available via Google CDN; version 1.1.22 used here -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.22/angular-material.min.js"></script>
+
+    <style>
+        body {
+            background-color: #101010;
+            color: #ffffff;
+        }
+
+        h1 {
+            color: #ffffff;
+        }
+
+        nav a {
+            color: #ffffff;
+        }
+
+        footer {
+            color: #ffffff;
+        }
+    </style>
+
+    <title>Mini Time logger</title>
+
+</head>
+
+<body ng-app="app">
+    <div class="container-fluid" ng-controller="togglToggler">
+
+        <div class="row" ng-show="model">
+            <div class="col-md-10">
+                <h3>Doing: {{timeEntry.description}}</h4>
+            </div>
+            <div class="cold-md-10">
+                <h4 style="text-align: right;">{{now | date:"MM/dd HH:mm"}}</h4>
+            </div>
+        </div>
+
+        <div ng-show="timeEntry.id == 0" class="row">
+            <div class="col-md-4 d-flex justify-content-center" ng-repeat="button in model.startButtons">
+                <button ng-click="startEntry(button.params)" type="button" class="btn btn-success"
+                    style="margin-bottom: 10px;">{{button.text}}</button>
+            </div>
+        </div>
+        <div ng-show="timeEntry.id != 0">
+            <button ng-click="stopEntry()" type="button" class="btn btn-danger">Stop</button>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                Day
+                <md-progress-linear md-mode="determinate" value="{{dayProgress}}"></md-progress-linear>
+            </div>
+            <div class="col-md-4">
+                Week
+                <md-progress-linear md-mode="determinate" value="{{weekProgress}}"></md-progress-linear>
+            </div>
+            <div class="col-md-4">
+                Month
+                <md-progress-linear md-mode="determinate" value="{{monthProgess}}"></md-progress-linear>
+            </div>
+        </div>
+
+    </div>
+    <script>
+        angular.module("app", ['ngMaterial']).controller("togglToggler", function ($scope, $http) {
+            const emptyTimeEntry = {
+                id: 0,
+                description: "nothing? Log your time..."
+            }
+
+            const secondsInWorkDay = 60 * 60 * 8; //8 hours
+            const secondsInWorkWeek = secondsInWorkDay * 5; // 5 day work week
+            const secondsInWorkMonth = secondsInWorkWeek * 4; // 4 weeks per month
+
+            $scope.timeEntry = emptyTimeEntry;
+            $scope.dayProgress = 90;
+            $scope.weekProgress = 15;
+
+            $scope.dayEntries = [];
+            $scope.weekEntries = [];
+            $scope.monthEntries = [];
+
+            $scope.dayProgress = 0;
+            $scope.weekProgress = 0;
+            $scope.monthProgess = 0;
+
+            setInterval(() => {
+                $scope.now = new Date();
+            }, 1000);
+
+            $scope.model = {}
+
+            $http.get("/config").then((resp, err) => {
+                if (resp && resp.data) {
+                    $scope.model = resp.data;
+                }
+            })
+
+            setInterval(() => {
+                $http.get("/getActiveEntry").then((resp, err) => {
+                    if (resp && resp.data) {
+                        let timeEntry = resp.data;
+                        if (timeEntry.id > 0) {
+                            $scope.timeEntry = timeEntry;
+                        } else {
+                            $scope.timeEntry = emptyTimeEntry;
+                        }
+                    }
+                });
+
+                $http.get("/todayEntries").then((resp, err) => {
+                    if (resp && resp.data) {
+                        let secondsWorkedDay = 0;
+                        resp.data.entries.forEach(entry => {
+                            let s = new Date(entry.start);
+                            let e = new Date(entry.stop)
+                            let entryLengthSeconds = (e.getTime() - s.getTime()) / 1000;
+                            secondsWorkedDay += entryLengthSeconds;
+                        });
+                        $scope.dayProgress = Math.floor(100 * secondsWorkedDay / secondsInWorkDay);
+                    }
+                });
+
+                $http.get("/weekEntries").then((resp, err) => {
+                    if (resp && resp.data) {
+                        let secondWorkedWeek = 0;
+                        resp.data.entries.forEach(entry => {
+                            let s = new Date(entry.start);
+                            let e = new Date(entry.stop)
+                            let entryLengthSeconds = (e.getTime() - s.getTime()) / 1000;
+                            secondWorkedWeek += entryLengthSeconds;
+                        });
+                        $scope.weekProgress = Math.floor(100 * secondWorkedWeek / secondsInWorkWeek);
+                    }
+                });
+
+                $http.get("/monthEntries").then((resp, err) => {
+                    if (resp && resp.data) {
+                        let secondWorkedMonth = 0;
+                        resp.data.entries.forEach(entry => {
+                            let s = new Date(entry.start);
+                            let e = new Date(entry.stop)
+                            let entryLengthSeconds = (e.getTime() - s.getTime()) / 1000;
+                            secondWorkedMonth += entryLengthSeconds;
+                        });
+                        $scope.monthProgess = Math.floor(100 * secondWorkedMonth / secondsInWorkMonth);
+                    }
+                });
+            }, 2000);
+
+            $scope.startEntry = function (entryParams) {
+                $http({
+                    url: "/startEntry",
+                    method: "GET",
+                    params: entryParams
+                })
+                    .then((resp, err) => {
+                        console.log("Started")
+                    })
+            }
+
+            $scope.stopEntry = function () {
+                $http.get("/stopEntry").then((resp, err) => {
+                    console.log("Stopped")
+                })
+            }
+
+        })
+    </script>
+
+</body>
+
+</html>
