@@ -5,7 +5,7 @@ require('datejs')
 const fs = require('fs');
 const path = require('path');
 const TogglClient = require('toggl-api');
-const { parseFromTimeZone} = require('date-fns-timezone');
+const { parseFromTimeZone } = require('date-fns-timezone');
 const express = require('express');
 
 const configPath = path.join(__dirname, '/config/model.json');
@@ -90,11 +90,15 @@ app.get('/todayEntries', (req, res) => {
     todayEnd.setHours(23, 59, 59);
 
     toggl.getTimeEntries(todayStart, todayEnd, (err, resp) => {
-        res.send({
-            from: todayStart,
-            to: todayEnd,
-            entries: resp
-        });
+        if (err)
+            res.send(err)
+        else {
+            res.send({
+                from: todayStart,
+                to: todayEnd,
+                entries: resp
+            });
+        }
     });
 });
 
@@ -112,30 +116,41 @@ app.get('/weekEntries', (req, res) => {
     friday.setHours(23, 59, 59);
     setTZ(friday);
 
+    //waitForRequestLimit();
+    
     toggl.getTimeEntries(monday, friday, (err, resp) => {
-        res.send({
-            from: monday,
-            to: friday,
-            entries: resp
-        });
+        if (err)
+            res.send(err)
+        else {
+            res.send({
+                from: monday,
+                to: friday,
+                entries: resp
+            });
+        }
     });
 });
 
 app.get('/monthEntries', (req, res) => {
-    let monday = Date.today().first().monday()
-    setTZ(monday);
-    monday.setHours(0, 0, 0);
+    let firstDay = Date.today().first()
+    setTZ(firstDay);
+    firstDay.setHours(0, 0, 0);
 
-    let friday = Date.today().last().friday()
-    setTZ(friday);
-    friday.setHours(23, 59, 59);
+    let lastDay = Date.today().last()
+    setTZ(lastDay);
+    lastDay.setHours(23, 59, 59);
 
-    toggl.getTimeEntries(monday, friday, (err, resp) => {
-        res.send({
-            from: monday,
-            to: friday,
-            entries: resp
-        });
+    //waitForRequestLimit();
+    toggl.getTimeEntries(firstDay, lastDay, (err, resp) => {
+        if (err)
+            res.send(err)
+        else {
+            res.send({
+                from: firstDay,
+                to: lastDay,
+                entries: resp
+            });
+        }
     });
 });
 

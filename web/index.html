@@ -71,7 +71,7 @@
         </div>
 
         <div ng-show="timeEntry.id == 0" class="row">
-            <div class="col-md-4 d-flex justify-content-center" ng-repeat="button in model.startButtons">
+            <div class="col-md-4 d-flex justify-content-center" ng-repeat="button in startButtons">
                 <button ng-click="startEntry(button.params)" type="button" class="btn btn-success"
                     style="margin-bottom: 10px;">{{button.text}}</button>
             </div>
@@ -119,6 +119,8 @@
             $scope.weekProgress = 0;
             $scope.monthProgess = 0;
 
+            $scope.refreshInterval = 10000;
+
             setInterval(() => {
                 $scope.now = new Date();
             }, 1000);
@@ -128,6 +130,8 @@
             $http.get("/config").then((resp, err) => {
                 if (resp && resp.data) {
                     $scope.model = resp.data;
+                    $scope.refreshInterval = $scope.model.updateFrequency;
+                    $scope.startButtons = $scope.model.startButtons;
                 }
             })
 
@@ -142,9 +146,11 @@
                         }
                     }
                 });
+            }, 10000);
 
+            setInterval(() => {
                 $http.get("/todayEntries").then((resp, err) => {
-                    if (resp && resp.data) {
+                    if (resp && resp.data && resp.data.entries && resp.data.entries.length > 0) {
                         let secondsWorkedDay = 0;
                         resp.data.entries.forEach(entry => {
                             let s = new Date(entry.start);
@@ -153,11 +159,15 @@
                             secondsWorkedDay += entryLengthSeconds;
                         });
                         $scope.dayProgress = Math.floor(100 * secondsWorkedDay / secondsInWorkDay);
+                    }else{
+                        console.warn("Skipped processing resp to todayEntries",resp)
                     }
                 });
+            }, 30000);
 
+            setInterval(() => {
                 $http.get("/weekEntries").then((resp, err) => {
-                    if (resp && resp.data) {
+                    if (resp && resp.data && resp.data.entries && resp.data.entries.length > 0) {
                         let secondWorkedWeek = 0;
                         resp.data.entries.forEach(entry => {
                             let s = new Date(entry.start);
@@ -166,11 +176,15 @@
                             secondWorkedWeek += entryLengthSeconds;
                         });
                         $scope.weekProgress = Math.floor(100 * secondWorkedWeek / secondsInWorkWeek);
+                    }else{
+                        console.warn("Skipped processing resp to weekEntries",resp)
                     }
                 });
+            }, 35000);
 
+            setInterval(() => {
                 $http.get("/monthEntries").then((resp, err) => {
-                    if (resp && resp.data) {
+                    if (resp && resp.data && resp.data.entries && resp.data.entries.length > 0) {
                         let secondWorkedMonth = 0;
                         resp.data.entries.forEach(entry => {
                             let s = new Date(entry.start);
@@ -179,9 +193,11 @@
                             secondWorkedMonth += entryLengthSeconds;
                         });
                         $scope.monthProgess = Math.floor(100 * secondWorkedMonth / secondsInWorkMonth);
+                    }else{
+                        console.warn("Skipped processing resp to monthEntries",resp)
                     }
                 });
-            }, 2000);
+            }, 40000);
 
             $scope.startEntry = function (entryParams) {
                 $http({
@@ -199,7 +215,6 @@
                     console.log("Stopped")
                 })
             }
-
         })
     </script>
 
