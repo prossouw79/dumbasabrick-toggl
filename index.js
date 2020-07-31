@@ -32,11 +32,11 @@ const app = express()
 app.use(express.static('web'))
 const port = 3000
 
-app.get('/', function (req, res) {
+app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/web/index.html'));
 });
 
-app.get('/config', function (req, res) {
+app.get('/config', function(req, res) {
     res.send(config)
 });
 
@@ -46,7 +46,7 @@ app.get('/startEntry', (req, res) => {
     toggl.startTimeEntry({
         description: params.description,
         tags: params.tags.includes(",") ? params.tags.split(',') : [params.tags]
-    }, function (err, timeEntry) {
+    }, function(err, timeEntry) {
         if (err)
             res.send(err);
         else
@@ -93,6 +93,8 @@ app.get('/todayEntries', (req, res) => {
         if (err)
             res.send(err)
         else {
+            console.info("Got day entries between", todayStart, todayEnd, resp.length)
+
             res.send({
                 from: todayStart,
                 to: todayEnd,
@@ -117,11 +119,13 @@ app.get('/weekEntries', (req, res) => {
     setTZ(friday);
 
     //waitForRequestLimit();
-    
+
     toggl.getTimeEntries(monday, friday, (err, resp) => {
         if (err)
             res.send(err)
         else {
+            console.info("Got week entries between", monday, friday, resp.length)
+
             res.send({
                 from: monday,
                 to: friday,
@@ -132,19 +136,23 @@ app.get('/weekEntries', (req, res) => {
 });
 
 app.get('/monthEntries', (req, res) => {
-    let firstDay = Date.today().first()
+    let date = new Date()
+    var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
     setTZ(firstDay);
     firstDay.setHours(0, 0, 0);
 
-    let lastDay = Date.today().last()
+    var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
     setTZ(lastDay);
     lastDay.setHours(23, 59, 59);
+
 
     //waitForRequestLimit();
     toggl.getTimeEntries(firstDay, lastDay, (err, resp) => {
         if (err)
             res.send(err)
         else {
+            console.info("Got month entries between", firstDay, lastDay, resp.length)
+
             res.send({
                 from: firstDay,
                 to: lastDay,
