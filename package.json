@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "angular-chart.js": "^1.1.1",
     "date-fns-timezone": "^0.1.4",
     "datejs": "^1.0.0-rc3",
     "express": "^4.17.1",

@@ -37,6 +37,7 @@ const toggl = new TogglClient({ apiToken: API_TOKEN });
 
 const app = express()
 app.use(express.static('web'))
+
 const port = 3000
 
 let model = {
@@ -44,8 +45,9 @@ let model = {
     workspaceId: {},
     tags: [],
     projects: [],
-
+    entryHistory: null
 }
+
 function initModel() {
     model.updated = new Date();
 
@@ -93,6 +95,24 @@ function initModel() {
                 }
             })
         })
+
+        let start = Date.today().add(-30).days()
+        start.setHours(0, 0, 0);
+        setTZ(start);
+
+        var end = new Date();
+        end.setHours(23, 59, 59);
+        setTZ(end);
+
+        //waitForRequestLimit();
+        toggl.getTimeEntries(start, end, (err, resp) => {
+            model.entryHistory = {
+                from: start,
+                to: end,
+                entries: resp
+            }
+        });
+        
     })
 }
 
@@ -101,7 +121,6 @@ initModel();
 setInterval(() => {
     initModel();
 }, 60000);
-
 
 app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname + '/web/index.html'));

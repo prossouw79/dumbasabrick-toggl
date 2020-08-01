@@ -7,15 +7,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.19/lodash.min.js"
+        integrity="sha256-Jvh9+A4HNbbWsWl1Dw7kAzNsU3y8elGIjLnUSUNMtLg=" crossorigin="anonymous"></script>
 
     <!-- Angular Material CSS now available via Google CDN; version 1.1.22 used here -->
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.22/angular-material.min.css">
+    <link rel="stylesheet"
+        href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.22/angular-material.min.css">
 
     <!-- Angular Material Dependencies -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
@@ -26,190 +38,331 @@
     <!-- Angular Material Javascript now available via Google CDN; version 1.1.22 used here -->
     <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.22/angular-material.min.js"></script>
 
-    <style>
-        body {
-            background-color: #101010;
-            color: #ffffff;
-        }
-        
-        h1 {
-            color: #ffffff;
-        }
-        
-        nav a {
-            color: #ffffff;
-        }
-        
-        footer {
-            color: #ffffff;
-        }
-    </style>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 
     <title>Mini Time logger</title>
+
+    <style>
+        body {
+            /* width: 800px; */
+            color: white;
+            background-color: black;
+            height: 5000px;
+            /* background: linear-gradient(90deg, black 0%, rgb(56, 56, 56) 50%, black 100%); */
+        }
+
+        tr td {
+            padding: 5px !important;
+            margin: 5px !important;
+        }
+    </style>
 
 </head>
 
 <body ng-app="app">
+
     <div class="container-fluid" ng-controller="togglToggler">
 
         <div class="row" ng-show="model">
-            <div class="col-md-8">
+            <div class="col-md-6">
+                <h4>{{activeEntry.description}}</h4>
+            </div>
+
+            <div class="col-md-6">
+                <h4 style=" text-align: right;">{{now | date:"dd MMM HH:mm"}}</h4>
+            </div>
+
+            <!-- <pre>{{model.entryHistory | json}}</pre> -->
+            <div class="col-md-6">
+                <div class="col-md-5">
+                    <h4>Popular entries</h4>
+                </div>
+                <div class="col-md-7">
+                    <select class="custom-select custom-select-sm mb-3" ng-model="relevanceMetric"
+                        ng-change="refreshTable()" ng-options="metric for metric in relevanceMetrics">
+                    </select></div>
+                <div class="table-responsive">
+                    <table class="table" style="color: white;">
+                        <thead>
+                            <th>Relevance</th>
+                            <th>Entry</th>
+                            <th>Tags</th>
+                            <th></th>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="entry in tableEntries | limitTo:5">
+                                <td>{{getRelevance(entry)}}</td>
+                                <td>{{getEntry(entry)  | limitTo:25 }} </td>
+                                <td>{{getTags(entry)}}</td>
+                                <td><button type="button" class="btn btn-success btn-sm" ng-click="startEntry(entry)"><i class="fa fa-play-circle-o" aria-hidden="true"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="pieChart" style="width:350px;height:350px;"></div>
+
+
+
+            <!-- <div class="col-md-6 table-responsive">
+                <h3>Entry History</h3>
+                <table class="table" style="color: white;">
+                    <thead>
+                        <th>Entry</th>
+                        <th>Tags</th>
+                        <th></th>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="entry in getEntriesHistory() | limitTo:6">
+                            <td>{{getEntry(entry)}}</td>
+                            <td>{{getTags(entry)}}</td>
+                            <td><button type="button" class="btn btn-success btn-sm">Go</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div> -->
+
+            <!-- <div class="col-md-3">
+                <h4>Select Tag</h4>
+                <select class="custom-select custom-select-lg mb-3" ng-model="newTask.tag" ng-options="tag.name for tag in model.tags"></select>
+            </div>
+
+            <div class="col-md-3">
+                <h4>Select Project</h4>
+                <select class="custom-select custom-select-lg mb-3" ng-model="newTask.project" ng-options="project.name for project in model.projects"></select>
+            </div> -->
+
+            <!-- <div class="col-md-4 d-flex justify-content-center"> -->
+            <!-- <div class="btn-group" role="group">
+                <button ng-repeat="tag in model.tags" type="button" class="btn btn-success">{{tag.name}}</button>
+            </div> -->
+
+            <!-- <div class="col-md-8">
                 <h3>Doing: {{timeEntry.description}}</h4>
             </div>
-            <div class="cold-md-2">
-                <h4 style="text-align: right;">{{now | date:"MM/dd HH:mm"}}</h4>
-            </div>
-        </div>
+        -->
 
-        <div ng-show="timeEntry.id == 0" class="row">
-            <div class="col-md-4 d-flex justify-content-center" ng-repeat="button in startButtons">
-                <button ng-click="startEntry(button.params)" type="button" class="btn btn-success" style="margin-bottom: 10px;">{{button.text}}</button>
-            </div>
-        </div>
-        <div ng-show="timeEntry.id != 0">
-            <button ng-click="stopEntry()" type="button" class="btn btn-danger">Stop</button>
-        </div>
-
-        <div class="row">
-            <div class="col-md-4">
-                Day
-                <md-progress-linear md-mode="determinate" value="{{dayProgress}}"></md-progress-linear>
-            </div>
-            <div class="col-md-4">
-                Week
-                <md-progress-linear md-mode="determinate" value="{{weekProgress}}"></md-progress-linear>
-            </div>
-            <div class="col-md-4">
-                Month
-                <md-progress-linear md-mode="determinate" value="{{monthProgess}}"></md-progress-linear>
-            </div>
+            <!-- <pre>{{model.entryHistory | json}}</pre> -->
         </div>
 
     </div>
     <script>
-        angular.module("app", ['ngMaterial']).controller("togglToggler", function($scope, $http) {
-            const emptyTimeEntry = {
-                id: 0,
-                description: "nothing? Log your time..."
-            }
+        angular.module("app", ['ngMaterial']).controller("togglToggler", function ($scope, $http) {
 
             const secondsInWorkDay = 60 * 60 * 8; //8 hours
             const secondsInWorkWeek = secondsInWorkDay * 5; // 5 day work week
             const secondsInWorkMonth = secondsInWorkWeek * 4; // 4 weeks per month
 
-            $scope.timeEntry = emptyTimeEntry;
-            $scope.dayProgress = 90;
-            $scope.weekProgress = 15;
+            $scope.model = null;
+            $scope.now = new Date();
+            $scope.newTask = {}
 
-            $scope.dayEntries = [];
-            $scope.weekEntries = [];
-            $scope.monthEntries = [];
+            $scope.relevanceMetrics = ["Frequency", "Recency", "Total Time"];
+            $scope.relevanceMetric = $scope.relevanceMetrics[0]
 
-            $scope.dayProgress = 0;
-            $scope.weekProgress = 0;
-            $scope.monthProgess = 0;
+            $scope.tableEntries = [];
 
-            $scope.refreshInterval = 10000;
+            $http.get("/model").then((resp, err) => {
+                if (resp && resp.data) {
+                    $scope.model = resp.data;
+
+                    $scope.newTask.tag = $scope.model.tags[0];
+                    $scope.newTask.project = $scope.model.projects[0];
+
+                    refreshTable();
+                    generatePlot();
+                }
+            });
+
+            function refreshTable() {
+                $scope.tableEntries = getPopularHistory();
+            }
 
             setInterval(() => {
                 $scope.now = new Date();
+                $scope.$apply();
             }, 1000);
-
-            $scope.model = {}
-
-            $http.get("/config").then((resp, err) => {
-                if (resp && resp.data) {
-                    $scope.model = resp.data;
-                    $scope.refreshInterval = $scope.model.updateFrequency;
-                    $scope.startButtons = $scope.model.startButtons;
-                }
-            })
 
             setInterval(() => {
                 $http.get("/getActiveEntry").then((resp, err) => {
                     if (resp && resp.data) {
                         let timeEntry = resp.data;
                         if (timeEntry.id > 0) {
-                            $scope.timeEntry = timeEntry;
+                            $scope.activeEntry = timeEntry;
                         } else {
-                            $scope.timeEntry = emptyTimeEntry;
+                            $scope.activeEntry = {
+                                id: 0,
+                                description: "Dumb as a brick time logging"
+                            }
+
                         }
                     }
                 });
             }, 2000);
 
-            setInterval(() => {
-                $http.get("/todayEntries").then((resp, err) => {
-                    if (resp && resp.data && resp.data.entries && resp.data.entries.length > 0) {
-                        let secondsWorkedDay = 0;
-                        resp.data.entries.forEach(entry => {
-                            let s = new Date(entry.start);
-                            let e = new Date(entry.stop)
-                            let entryLengthSeconds = (e.getTime() - s.getTime()) / 1000;
-                            secondsWorkedDay += entryLengthSeconds;
-                        });
-                        $scope.dayProgress = Math.floor(100 * secondsWorkedDay / secondsInWorkDay);
-                        console.log("Day progress", $scope.dayProgress);
-
-                    } else {
-                        console.warn("Skipped processing resp to todayEntries", resp)
-                    }
-                });
-            }, 5000);
-
-            setInterval(() => {
-                $http.get("/weekEntries").then((resp, err) => {
-                    if (resp && resp.data && resp.data.entries && resp.data.entries.length > 0) {
-                        let secondWorkedWeek = 0;
-                        resp.data.entries.forEach(entry => {
-                            let s = new Date(entry.start);
-                            let e = new Date(entry.stop)
-                            let entryLengthSeconds = (e.getTime() - s.getTime()) / 1000;
-                            secondWorkedWeek += entryLengthSeconds;
-                        });
-                        $scope.weekProgress = Math.floor(100 * secondWorkedWeek / secondsInWorkWeek);
-                        console.log("Week progress", $scope.weekProgress);
-
-                    } else {
-                        console.warn("Skipped processing resp to weekEntries", resp)
-                    }
-                });
-            }, 7000);
-
-            setInterval(() => {
-                $http.get("/monthEntries").then((resp, err) => {
-                    if (resp && resp.data && resp.data.entries && resp.data.entries.length > 0) {
-                        let secondWorkedMonth = 0;
-                        resp.data.entries.forEach(entry => {
-                            let s = new Date(entry.start);
-                            let e = new Date(entry.stop)
-                            let entryLengthSeconds = (e.getTime() - s.getTime()) / 1000;
-                            secondWorkedMonth += entryLengthSeconds;
-                        });
-                        $scope.monthProgess = Math.floor(100 * secondWorkedMonth / secondsInWorkMonth);
-                        console.log("Month progress", $scope.monthProgess);
-                    } else {
-                        console.warn("Skipped processing resp to monthEntries", resp)
-                    }
-                });
-            }, 10000);
-
-            $scope.startEntry = function(entryParams) {
-                $http({
-                        url: "/startEntry",
-                        method: "GET",
-                        params: entryParams
-                    })
-                    .then((resp, err) => {
-                        console.log("Started")
-                    })
+            function secondsBetween(e, s) {
+                return (e.getTime() - s.getTime()) / 1000;
             }
 
-            $scope.stopEntry = function() {
-                $http.get("/stopEntry").then((resp, err) => {
-                    console.log("Stopped")
-                })
+            function startEntry(entry){
+                console.log(entry);
             }
+
+            function getDescription(entry) {
+                return entry.description;
+            }
+            function getProject(entry) {
+                let project = $scope.model.projects.filter(p => p.id === entry.pid)[0];
+
+                return project ? project.name : ""
+            }
+            function getTags(entry) {
+                return entry.tags && entry.tags.length > 0 ? entry.tags.join(',') : ""
+            }
+
+            function getEntry(entry) {
+                return getProject(entry) + " - " + getDescription(entry);
+            }
+
+            function getPopularHistory() {
+                if (!$scope.model || !$scope.model.entryHistory || $scope.model.entryHistory.length == 0)
+                    return [];
+
+                let filteredEntries = $scope.model.entryHistory.entries
+                    .filter(e => {
+                        return e.description && e.description.length > 0 && e.tags && e.tags.length > 0
+                    });
+
+                let groupedEntries = _.groupBy(filteredEntries, e => uniquePermutation(e));
+
+                //Add indexes for frequency, recency and total time
+                let now = new Date();
+                filteredEntries.forEach(e => {
+                    let uniqueEntryGroup = groupedEntries[uniquePermutation(e)];
+
+                    //frequency index : how many times has this task been started
+                    e.frequencyIndex = uniqueEntryGroup.length;
+
+                    //recency index: how long ago was the most recent of this task
+                    let mostRecentEntry = _.minBy(uniqueEntryGroup, ue => secondsBetween(now, new Date(ue.stop)))
+                    e.recencyIndex = secondsBetween(now, new Date(mostRecentEntry.stop));
+
+                    //total time
+                    e.totalTimeIndex = 0;
+                    uniqueEntryGroup.forEach(ue => {
+                        e.totalTimeIndex += secondsBetween(new Date(ue.stop), new Date(ue.start));
+                    });
+                });
+
+                switch ($scope.relevanceMetric) {
+                    case "Frequency": {
+                        filteredEntries = _.sortBy(filteredEntries, e => -e.frequencyIndex);
+                        break;
+                    }
+                    case "Recency": {
+                        filteredEntries = _.sortBy(filteredEntries, e => e.recencyIndex);
+                        break;
+                    }
+                    case "Total Time": {
+                        filteredEntries = _.sortBy(filteredEntries, e => -e.totalTimeIndex);
+                        break;
+                    }
+                }
+
+                let uniqEntries = _.uniqBy(filteredEntries, e => uniquePermutation(e));
+
+                return uniqEntries;
+            }
+
+            function getRelevance(entry) {
+                let relevance = "";
+                switch ($scope.relevanceMetric) {
+                    case "Frequency": {
+                        relevance = `${entry.frequencyIndex} entries`;
+                        break;
+                    }
+                    case "Recency": {
+                        relevance = `${Math.round(entry.recencyIndex / (60 * 60))} hours ago`;
+                        break;
+                    }
+                    case "Total Time": {
+                        relevance = `${Math.round(entry.totalTimeIndex / (60 * 60))} hours spent`;
+                        break;
+                    }
+                }
+
+                return relevance;
+            }
+
+            function uniquePermutation(e) {
+                return `${e.description}_${getProject(e)}_${getTags(e)}`;
+            }
+
+            function generatePlot() {
+                if (!$scope.model || !$scope.model.entryHistory || $scope.model.entryHistory.length == 0)
+                    return;
+
+                let filteredEntries = $scope.model.entryHistory.entries
+                    .filter(e => {
+                        return e.tags && e.tags.length > 0
+                    });
+
+                let totalSeconds = 0;
+                filteredEntries.forEach(e => {
+                    totalSeconds += secondsBetween(new Date(e.stop), new Date(e.start))
+                });
+
+                let tagCollection =
+                    $scope.model.tags
+                        .map(t => t.name)
+                        .map(tagName => {
+                            let entriesWithTag = _.filter(filteredEntries, e => e.tags.includes(tagName));
+
+                            if (entriesWithTag.length == 0)
+                                return null;
+                            else {
+                                let secondsSpentOnTag = 0;
+                                entriesWithTag.forEach(ewt => {
+                                    secondsSpentOnTag += secondsBetween(new Date(ewt.stop), new Date(ewt.start))
+                                });
+
+                                return {
+                                    name: tagName,
+                                    time: Math.round(secondsSpentOnTag / ( 60 * 60))
+                                }
+                            }
+                        }).filter(tc => tc != null)
+
+                tagCollection = _.sortBy(tagCollection, tc => -tc.time)
+
+
+                var data = [{
+                    values: tagCollection.map(tc => tc.time),
+                    labels: tagCollection.map(tc => tc.name),
+                    type: 'pie'
+                }];
+
+                var layout = {
+                    height: 400,
+                    width: 350,
+                    plot_bgcolor: "black",
+                    paper_bgcolor: "black"
+                };
+
+                Plotly.newPlot('pieChart', data, layout);
+            }
+
+            $scope.startEntry = startEntry;
+            $scope.getDescription = getDescription;
+            $scope.getProject = getProject;
+            $scope.getTags = getTags;
+            $scope.getEntry = getEntry;
+            $scope.refreshTable = refreshTable;
+            $scope.getRelevance = getRelevance;
+            $scope.generatePlot = generatePlot;
         })
     </script>
 
