@@ -13,6 +13,7 @@
     "date-fns-timezone": "^0.1.4",
     "datejs": "^1.0.0-rc3",
     "express": "^4.17.1",
+    "lodash": "^4.17.19",
     "toggl-api": "^1.0.1"
   }
 }
